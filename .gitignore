@@ -1,0 +1,30 @@
+# Build results
+bin/
+obj/
+out/
+debug/
+release/
+
+# User-specific files
+*.user
+*.rsuser
+*.suo
+*.userosscache
+*.sln.docstates
+
+# Visual Studio Code
+.vscode/
+
+# Rider / IntelliJ
+.idea/
+
+# Logs
+*.log
+
+# NuGet packages
+*.nupkg
+*.snupkg
+packages/
+
+# Other
+*.db
