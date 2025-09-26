@@ -1,9 +1,14 @@
-    var builder = WebApplication.CreateBuilder(args);
+using TaskBoard.Api.Data;
+using Microsoft.EntityFrameworkCore;
+
+var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
+builder.Services.AddDbContext<TaskBoardContext>(options => 
+    options.UseSqlite(builder.Configuration.GetConnectionString("DefaultConnection")));
 
 var app = builder.Build();
 
@@ -16,6 +21,7 @@ if (app.Environment.IsDevelopment())
 
 app.UseHttpsRedirection();
 
+/*
 var tasks = new List<TaskItem>();
 var nextId = 1;
 
@@ -60,4 +66,4 @@ app.MapDelete("/tasks/{id}", (int id) =>
 
 app.Run();
 
-record TaskItem(int Id, string Title, string Description, string Status, DateTime CreatedAt);
+*/
