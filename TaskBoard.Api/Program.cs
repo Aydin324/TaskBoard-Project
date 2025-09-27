@@ -10,6 +10,17 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
+//var app = builder.Build();
+
+
+
+//Add db except for test enviorment
+if (!builder.Environment.IsEnvironment("Test"))
+{
+    builder.Services.AddDbContext<TaskBoardContext>(options =>
+        options.UseSqlite(builder.Configuration.GetConnectionString("DefaultConnection")));
+}
+
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
@@ -17,13 +28,6 @@ if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
     app.UseSwaggerUI();
-}
-
-//Add db except for test enviorment
-if (!builder.Environment.IsEnvironment("Test"))
-{
-    builder.Services.AddDbContext<TaskBoardContext>(options =>
-        options.UseSqlite(builder.Configuration.GetConnectionString("DefaultConnection")));
 }
 
 app.UseHttpsRedirection();

@@ -1,1 +1,20 @@
-<p>task-list works!</p>
+<div class="task-list-container">
+  @if (!tasks().length) {
+    <p>No tasks available.</p>
+  } @else {
+    <ul>
+      @for (task of tasks(); track task.id) {
+        <li>
+          <span>{{ task.title }}</span>
+          <span class="status">{{ getStatusLabel(task.status) }}</span>
+
+          <!-- Delete button -->
+          <button (click)="deleteTask(task.id)">Delete</button>
+
+          <!-- Toggle status button -->
+          <button (click)="toggleTaskStatus(task)">Toggle Status</button>
+        </li>
+      }
+    </ul>
+  }
+</div>

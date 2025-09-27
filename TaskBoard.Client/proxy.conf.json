@@ -1,5 +1,5 @@
 {
-  "/api": {
+  "/tasks": {
     "target": "http://localhost:5109",
     "secure": false,
     "changeOrigin": true,
