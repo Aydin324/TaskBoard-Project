@@ -1,5 +1,7 @@
 using TaskBoard.Api.Data;
 using Microsoft.EntityFrameworkCore;
+using TaskBoard.Api.Models;
+using TaskStatus = TaskBoard.Api.Models.TaskStatus;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -21,49 +23,68 @@ if (app.Environment.IsDevelopment())
 
 app.UseHttpsRedirection();
 
-/*
-var tasks = new List<TaskItem>();
-var nextId = 1;
 
 //get all tasks
-app.MapGet("/tasks", () => tasks);
+app.MapGet("/tasks", async (TaskBoardContext db) =>
+{
+    var list = await db.Tasks.OrderBy(t => t.CreatedAt).ToListAsync();
+    return Results.Ok(list);
+});
 
 //get task by id
-app.MapGet("/tasks/{id}", (int id) =>
+app.MapGet("/tasks/{id}", async (int id, TaskBoardContext db) =>
 {
-    var task = tasks.FirstOrDefault(t => t.Id == id);
+    var task = await db.Tasks.FindAsync(id);
     return task is not null ? Results.Ok(task) : Results.NotFound();
 });
 
 //create task
-app.MapPost("/tasks", (TaskItem task) =>
+app.MapPost("/tasks", async (TaskItemDto dto, TaskBoardContext db) =>
 {
-    var newTask = task with { Id = nextId++, CreatedAt = DateTime.Now };
-    tasks.Add(newTask);
-    return Results.Created($"/tasks/{newTask.Id}", newTask);
+    if (string.IsNullOrWhiteSpace(dto.Title))
+        return Results.BadRequest(new { error = "Title is required" });
+
+    var entity = new TaskItem
+    {
+        Title = dto.Title.Trim(),
+        Details = dto.Details,
+        Status = dto.Status,
+        CreatedAt = DateTime.Now
+    };
+
+    db.Tasks.Add(entity);
+    await db.SaveChangesAsync();
+    return Results.Created($"/tasks/{entity.Id}", entity);
 });
 
 //update task
-app.MapPut("/tasks/{id}", (int id, TaskItem updatedTask) =>
+app.MapPut("/tasks/{id}", async (int id, TaskItemDto dto, TaskBoardContext db) =>
 {
-    var taskIndex = tasks.FindIndex(t => t.Id == id);
-    if (taskIndex == -1) return Results.NotFound();
+    var task = await db.Tasks.FindAsync(id);
+    if (task is null) return Results.NotFound();
 
-    var task = tasks[taskIndex];
-    var newTask = updatedTask with { Id = task.Id, CreatedAt = DateTime.Now };
-    tasks[taskIndex] = newTask;
-    return Results.Ok(newTask);
+    if (string.IsNullOrWhiteSpace(dto.Title)) return Results.BadRequest(new { error = "Title is required" });
+
+    task.Title = dto.Title.Trim();
+    task.Details = dto.Details;
+    task.Status = dto.Status;
+
+    await db.SaveChangesAsync();
+    return Results.Ok(task);
 });
 
 //delete task
-app.MapDelete("/tasks/{id}", (int id) =>
+app.MapDelete("/tasks/{id}", async (int id, TaskBoardContext db) =>
 {
-    var task = tasks.FirstOrDefault(t => t.Id == id);
+    var task = await db.Tasks.FindAsync(id);
     if (task is null) return Results.NotFound();
-    tasks.Remove(task);
+
+    db.Tasks.Remove(task);
+    await db.SaveChangesAsync();
     return Results.NoContent();
 });
 
 app.Run();
 
-*/
+//DTO
+public record TaskItemDto(string Title, string? Details, TaskStatus Status);
