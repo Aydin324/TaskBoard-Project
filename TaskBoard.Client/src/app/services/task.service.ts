@@ -17,7 +17,7 @@ export class TaskService {
   }
 
   getById(id: number): Observable<TaskItem> {
-    return this.http.get<TaskItem>('${this._base}/${id}');
+    return this.http.get<TaskItem>(`${this._base}/${id}`);
   }
 
   create(dto: TaskItemDto): Observable<TaskItem> {
@@ -25,11 +25,11 @@ export class TaskService {
   }
 
   update(id: number, dto: TaskItemDto): Observable<TaskItem> {
-    return this.http.put<TaskItem>('${this._base}/${id}', dto);
+    return this.http.put<TaskItem>(`${this._base}/${id}`, dto);
   }
 
   delete(id: number): Observable<void> {
-    return this.http.delete<void>('${this._base}/${id}');
+    return this.http.delete<void>(`${this._base}/${id}`);
   }
 
   toggleStatus(task: TaskItem): Observable<TaskItem> {

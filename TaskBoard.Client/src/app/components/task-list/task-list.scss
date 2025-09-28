@@ -1,0 +1,31 @@
+.task-list-container {
+  max-width: 700px;
+  margin: 2rem auto;
+  padding: 1rem;
+
+  ul.list-group {
+    margin-top: 1rem;
+  }
+
+  li.list-group-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    transition: background-color 0.2s ease;
+    border-radius: 0.25rem;
+    padding: 0.75rem 1rem;
+
+    &:hover {
+      background-color: #f8f9fa;
+    }
+  }
+
+  .badge {
+    font-size: 0.8rem;
+  }
+
+  .task-buttons {
+    display: flex;
+    gap: 0.5rem;
+  }
+}

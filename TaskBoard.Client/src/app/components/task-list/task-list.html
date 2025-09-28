@@ -1,20 +1,32 @@
-<div class="task-list-container">
-  @if (!tasks().length) {
-    <p>No tasks available.</p>
+<div class="task-list-container container mt-4">
+  <button class="btn btn-primary mb-3" (click)="startCreate()">New Task</button>
+
+  @if (creating()) {
+  <app-task-form (save)="saveTask($event)" (cancel)="cancelForm()"></app-task-form>
+  } @if (editingTask()) {
+  <app-task-form
+    [task]="editingTask()"
+    (save)="saveTask($event)"
+    (cancel)="cancelForm()"
+  ></app-task-form>
+  } @if (!tasks().length) {
+  <p class="text-muted">No tasks available.</p>
   } @else {
-    <ul>
-      @for (task of tasks(); track task.id) {
-        <li>
-          <span>{{ task.title }}</span>
-          <span class="status">{{ getStatusLabel(task.status) }}</span>
+  <ul class="list-group">
+    @for (task of tasks(); track task.id) {
+    <li class="list-group-item d-flex justify-content-between align-items-center">
+      <div>
+        <strong>{{ task.title }}</strong>
+        <span class="badge bg-secondary ms-2">{{ getStatusLabel(task.status) }}</span>
+      </div>
 
-          <!-- Delete button -->
-          <button (click)="deleteTask(task.id)">Delete</button>
-
-          <!-- Toggle status button -->
-          <button (click)="toggleTaskStatus(task)">Toggle Status</button>
-        </li>
-      }
-    </ul>
+      <div class="btn-group btn-group-sm" role="group">
+        <button class="btn btn-danger" (click)="deleteTask(task.id)">Delete</button>
+        <button class="btn btn-info text-white" (click)="toggleTaskStatus(task)">Toggle</button>
+        <button class="btn btn-warning" (click)="startEdit(task)">Edit</button>
+      </div>
+    </li>
+    }
+  </ul>
   }
 </div>
